@@ -18,17 +18,17 @@ $$P(X=k) = {n\choose k} p^k (1-p)^{n-k}$$
 
 Donde:
 
-* X es el número de éxitos en n ensayos independientes.
+* $n$ es el número de ensayos independientes
 
-* k es el número de éxitos que se desea obtener.
+* $k$ es el número de éxitos que se desea obtener.
 
-* p es la probabilidad de éxito en cada ensayo.
+* $p$ es la probabilidad de éxito en cada ensayo.
 
-* (1-p) es la probabilidad de fracaso en cada ensayo.
+* $(1-p)$ es la probabilidad de fracaso en cada ensayo.
 
 * ${n\choose k}$ es el coeficiente binomial, que se utiliza para calcular el número de formas diferentes en que se pueden obtener k éxitos en n ensayos.
 
-Una forma de presentar la distribución binomial en R eso:
+Una forma de presentar la distribución binomial en R es:
 
 ```
 dbinom(k, size = n, prob = p)
@@ -48,11 +48,15 @@ Esta función devuelve la probabilidad de obtener exactamente k éxitos en n ens
 
 (#) Un plato de dulces contiene 100 gomitas frijolitos y 80 gomitas pastillas. Se recogen cincuenta caramelos al azar. ¿Cuál es la probabilidad de que 35 de los 50 sean gomitas pastillas? 
 
-    Resolución: En este caso, podemos utilizar la distribución binomial para calcular la probabilidad de recolectar 35 gomitas pastillas en 50 intentos. La probabilidad de elegir una gomita pastilla es de 80/180 = 4/9 y la probabilidad de elegir una gomita frijol es de 100/180 = 5/9. Entonces la probabilidad de elegir 35 gomitas pastillas en 50 intentos sería: 
-
+    **Resolución manual:** 
+    En este caso, podemos utilizar la distribución binomial para calcular la probabilidad de recolectar 35 gomitas pastillas en 50 intentos. La probabilidad de elegir una gomita pastilla es de $\frac{80}{180} = \frac{4}{9}$ y la probabilidad de elegir una gomita frijol es de $\frac{100}{180} = \frac{5}{9}$. Entonces la probabilidad de elegir 35 gomitas pastillas en 50 intentos sería: 
+    * $n$ = 50
+    * $k$ = 35
+    * $p$ = 4/9
+    * $1-p$ = 5/9 
     $$P(X=35) = {50\choose 35} {({\frac{4}{9}})}^{35} {({\frac{5}{9}})}^{15}$$
 
-    Código en R: 
+    **Código en R:** 
 
     ```{r p_pastilla}
 p_pastilla <- 80 / (100 + 80)  #Probabilidad de obtener una pastilla
@@ -65,15 +69,91 @@ p_pastillas <- dbinom(35, size = 50, prob = p_pastilla)
 p_pastillas
     ```
 
-    ```{r print_jercicio_1,echo = FALSE}
+    ```{r print_ejercicio_gomitas ,echo = FALSE}
 cat("La probabilidad de elegir 35 gomitas pastillas en 50 intentos sería: ", p_pastillas*100, "% \n")
     ```
     
 (#) Un pequeño distrito electoral tiene 101 votantes femeninos y 95 votantes masculinos. Se extrae una muestra aleatoria de 10 votantes. ¿Cuál es la probabilidad de que exactamente 7 de los votantes sean mujeres?
 
-    Resolución:
+    **Resolución manual:** 
+    La probabilidad de elegir un votante femenino es de $\frac{101}{196}$ y la de elegir un votante masculino es de $\frac{95}{196}$. Entonces la probabilidad de elegir 7 votantes femeninos en 10 intentos sería:
+    * $n$ = 10
+    * $k$ = 7
+    * $p$ = 101/196
+    * $1-p$ = 95/196 
+    
+    $$P(X=7) = {10\choose 7} {({\frac{101}{196}})}^{7} {({\frac{95}{196}})}^{3}$$
+
+    **Código en R:** 
+    
+    ```{r p_mujer}
+p_mujer <- 101 / (101 + 95)  #Probabilidad de obtener una mujer votante
+p_mujer
+
+    ```
+    
+    ```{r p_mujeres}
+p_mujeres <- dbinom(7, size = 10, prob = p_mujer)
+p_mujeres
+    ```
+    
+    ```{r print_ejercicio_mujeres_votatantes, echo = FALSE}
+cat("La probabilidad de elegir 7 mujeres seleccionando 10 votantes sería: ", p_mujeres*100, "% \n")
+    ```
+
+## Distribución Poisson
+
+La distribución de Poisson se utiliza para modelar la probabilidad de que ocurra un número determinado de eventos en un intervalo de tiempo o espacio específico, cuando estos eventos ocurren de manera aleatoria e independiente.
+
+La función de probabilidad de la distribución de Poisson se define de la siguiente manera:
+
+$$ P(X = k) = \frac{e^{-\lambda} \lambda^k}{k!} $$
+
+Donde:
+
+* $k$ es el número de eventos que se desean contar
+
+* $\lambda$ es el parámetro de la distribución, que representa el número esperado de eventos en el intervalo de tiempo o espacio
+
+Una forma de presentar la distribución poisson en R es:
+
+
+```
+dpois(x,lambda)
+```
+
+Donde:
+
+* x es el número de eventos para el que se desea calcular la probabilidad.
+
+* lambda es el parámetro de la distribución de Poisson.
+
+### Ejercicios
 
 (#) En los últimos 100 años, ha habido 93 terremotos que miden 6.0 o más en la escala de Richter. ¿Cuál es la probabilidad de tener 3 terremotos en el mismo año que todos midan 6.0 o más?
+
+    **Resolución manual:** 
+    En este caso, necesitamos calcular la probabilidad de tener 3 terremotos en un año, dado que necestiamos la tasa de terremotos de 6.0 o más en los últimos 100 años, podemos calcular: $\frac{93}{100} = 0.93$ terremotos por año.
+    * $k$ = 3
+    * $\lambda = 0.93$
+        $$ P(X = 3) = \frac{e^{-0.93} 0.93^3}{3!} $$
+        
+    **Código en R:** 
+    
+    ```{r p_terremoto}
+p_terremoto <- 93 / 100  #tasa de terremotos por año
+p_terremoto
+
+    ```
+    
+    ```{r p_terremotos}
+p_terremotos <- dpois(3, p_terremoto)
+p_terremotos
+    ```
+    
+    ```{r print_ejercicio_terremotos,echo = FALSE}
+cat("La probabilidad de que 3 terremotos en el mismo año midan más de 6.0 es: ", p_terremotos*100, "% \n")
+    ```
 
 (#) El neuroblastoma, una forma rara de tumor maligno, ocurre en 11 de un millón de niños. En los 12,439 niños de Oak Park, Illinois, se reportan 4 casos de neuroblastoma. Suponiendo que no haya nada especial en Oak Park, donde la probabilidad de neuroblastoma es mayor de lo normal, encuentre la probabilidad de ver más de un caso de neuroblastoma en una población de este tamaño. ¿Qué es probable que puedas concluir?
 
